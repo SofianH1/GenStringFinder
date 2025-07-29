@@ -18,16 +18,19 @@ export default class Individual {
     dna: string;
     generation: number;
     length: number;
+    mutationRate:number;
 
-    constructor(dna: string = "", generation: number, length: number) {
+    constructor(dna: string = "", generation: number, length: number,mutationRate:number) {
         if (dna === "") {
             this.dna = randomString(length);
         }
         else {
             this.dna = dna;
+            this.mutate(mutationRate);
         }
         this.generation = generation;
         this.length = length;
+        this.mutationRate = mutationRate;
     }
 
     mutate(mutationRate: number) {
