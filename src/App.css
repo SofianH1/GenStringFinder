@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 #root {
   margin: 0;
   padding: 0;
@@ -25,9 +27,10 @@ Main {
   padding: 2rem;
   border-radius: 1em;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 3rem;
+  min-width: 700px;
 }
 
 Main input {
@@ -41,10 +44,30 @@ Main input {
 
 Main h2 {
   font-family: 'Courier New', Courier, monospace;
-  margin: 0;
+}
+
+Main h3 {
+  font-family: "Space Mono";
+  margin: 0.25rem;
+  text-align: left;
+}
+.settings{
+  width: 50%;
+}
+.population {
+  display: flex;
+  width: 50%;
+  margin-right: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h2 span {
+  color: red;
+}
+
+.false {
   color: red;
 }
 
