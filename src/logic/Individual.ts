@@ -49,7 +49,7 @@ export default class Individual {
     calculateFitness(target: string) {
         let fitnessTotal = 0;
         this.dna.split("").map((char, i) => {
-            let deltaChar = Math.abs(charactersList.indexOf(target[i]) - charactersList.indexOf(char))
+            const deltaChar = Math.abs(charactersList.indexOf(target[i]) - charactersList.indexOf(char))
             fitnessTotal += Math.min(deltaChar, charactersList.length - deltaChar);
         })
         return fitnessTotal;

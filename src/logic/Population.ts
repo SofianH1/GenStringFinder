@@ -8,6 +8,7 @@ export default class Population {
     population: Individual[] = [];
     averageFitness: number;
     generationCount: number;
+    _onUpdate:CallableFunction;
 
     constructor(size: number, target: string, mutationRate: number) {
         this.size = size;
@@ -16,6 +17,7 @@ export default class Population {
         this.population = [];
         this.averageFitness = 0;
         this.generationCount = 1;
+        this._onUpdate = () => {};
 
         for (let i = 0; i < this.size; i++) {
             this.population.push(new Individual("", this.generationCount, target.length, this.mutationRate));
@@ -27,7 +29,7 @@ export default class Population {
         this.population = this.population.sort((a, b) => a.calculateFitness(this.target) - b.calculateFitness(this.target));
     };
 
-    calculateAverageFitness(){
+    calculateAverageFitness() {
         let averageFitness = 0;
         for (let i = 0; i < this.size; i++) {
             averageFitness += this.population[i].calculateFitness(this.target);
@@ -37,7 +39,7 @@ export default class Population {
     }
 
     nextGen() {
-        let nextPopulation: Individual[] = [];
+        const nextPopulation: Individual[] = [];
         this.generationCount++;
         this.bestFitness();
         nextPopulation[0] = this.population[0];
@@ -45,11 +47,17 @@ export default class Population {
             nextPopulation[i] = new Individual(this.crossover(), this.generationCount, this.target.length, this.mutationRate)
         }
         this.population = nextPopulation;
+        this._onUpdate?.();
+
         console.log(this.population[0].calculateFitness(this.target));
     };
 
+    onUpdate(callback:CallableFunction) {
+        this._onUpdate = callback;
+    };
+
     crossover() {
-        let remainingChoices: number[] = [];
+        const remainingChoices: number[] = [];
         remainingChoices[0] = Math.ceil(this.target.length / 2);
         remainingChoices[1] = Math.floor(this.target.length / 2);
         this.bestFitness();
@@ -77,9 +85,9 @@ export default class Population {
         return (child);
     };
 
-    finished(){
+    finished() {
         this.bestFitness();
-        if(this.population[0].calculateFitness(this.target)===0){
+        if (this.population[0].calculateFitness(this.target) === 0) {
             console.log("Finished !")
             return true;
         }
