@@ -8,7 +8,7 @@ export default class Population {
     population: Individual[] = [];
     averageFitness: number;
     generationCount: number;
-    _onUpdate:CallableFunction;
+    _onUpdate: CallableFunction;
 
     constructor(size: number, target: string, mutationRate: number) {
         this.size = size;
@@ -17,10 +17,10 @@ export default class Population {
         this.population = [];
         this.averageFitness = 0;
         this.generationCount = 1;
-        this._onUpdate = () => {};
+        this._onUpdate = () => { };
 
         for (let i = 0; i < this.size; i++) {
-            this.population.push(new Individual("", this.generationCount, target.length, this.mutationRate,target));
+            this.population.push(new Individual("", this.generationCount, target.length, this.mutationRate, target));
         };
         this.bestFitness();
     };
@@ -36,21 +36,26 @@ export default class Population {
         };
         averageFitness /= this.size;
         return averageFitness;
-    }
+    };
+
+    updateTarget(target:string) {
+        this.target = target;
+        
+    };
 
     nextGen() {
         const nextPopulation: Individual[] = [];
         this.generationCount++;
         nextPopulation[0] = this.population[0];
         for (let i = 1; i < this.size; i++) {
-            nextPopulation[i] = new Individual(this.crossover(), this.generationCount, this.target.length, this.mutationRate,this.target)
+            nextPopulation[i] = new Individual(this.crossover(), this.generationCount, this.target.length, this.mutationRate, this.target)
         }
         this.population = nextPopulation;
         this.bestFitness();
         this._onUpdate?.();
     };
 
-    onUpdate(callback:CallableFunction) {
+    onUpdate(callback: CallableFunction) {
         this._onUpdate = callback;
     };
 

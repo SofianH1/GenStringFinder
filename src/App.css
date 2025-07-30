@@ -13,6 +13,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   width: 100%;
+  overflow: hidden;
 }
 
 Header {
@@ -63,14 +64,11 @@ Main h3 {
   align-items: center;
 }
 
-h2 span {
-  color: red;
-}
 
 .false {
-  color: red;
+  color: #D49EFA;
 }
 
 .correct {
-  color: green;
+  color: #9ED8FA;
 }
