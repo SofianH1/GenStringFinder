@@ -2,22 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import Population from "../../logic/Population.ts";
 
 export default function Main() {
-	const [target, setTarget] = useState<string>("La vie est comme un miroir. Si tu lui souris, elle te renvoie ton image.");
+	const [target, setTarget] = useState<string>("Huog est un énorme gay (pd) !!!");
 	const [isRunning, setIsRunning] = useState<boolean>(false);
 	const [, setTick] = useState(0);
 
 	const forceUpdate = () => setTick((t) => t + 1);
 
-	const population = useRef(new Population(100, target, 0.1));
+	const population = useRef(new Population(5000, target, 0.1));
 
 	useEffect(() => {
 		population.current.onUpdate(forceUpdate);
 	}, []);
 
-	const targetRef = useRef(target);
 	const isRunningRef = useRef(isRunning);
 
-	targetRef.current = target;
 	isRunningRef.current = isRunning;
 
 	function startLoop() {
@@ -29,10 +27,6 @@ export default function Main() {
 		}
 		step();
 	}
-
-	useEffect(() => {
-		
-	}, [target]);
 
 	return (
 		<main>
@@ -61,15 +55,21 @@ export default function Main() {
 				>
 					Stop
 				</button>
+				<h2>cible :</h2>
 				<h2>
 					{target}
-					<h3>
-						average fitness : {population.current.calculateAverageFitness()}
-					</h3>
 				</h2>
+				<br />
+					<h2>fitness (the lower, the better)</h2>
+					<h3>
+						average fitness : <br />{population.current.calculateAverageFitness()}
+					</h3>
+					<h3>
+						fittest : {population.current.population[0].calculateFitness(target)}
+					</h3>
 			</div>
 			<div className="population">
-				{population.current.population.map((individual, key) => {
+				{population.current.population.slice(0,10).map((individual, key,) => {
 					return (
 						<h3 key={key}>
 							{target && "-"}{" "}

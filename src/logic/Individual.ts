@@ -1,7 +1,10 @@
 const charactersList =
     " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 
-
+const charMap: { [key: string]: number } = {};
+charactersList.split("").forEach((char, index)=>{
+    charMap[char] = index;
+})
 function randomChar() {
     return charactersList.charAt(Math.floor(Math.random() * charactersList.length));
 }
@@ -18,9 +21,9 @@ export default class Individual {
     dna: string;
     generation: number;
     length: number;
-    mutationRate:number;
+    fitness:number;
 
-    constructor(dna: string = "", generation: number, length: number,mutationRate:number) {
+    constructor(dna: string = "", generation: number, length: number,mutationRate:number,target:string) {
         if (dna === "") {
             this.dna = randomString(length);
         }
@@ -30,13 +33,13 @@ export default class Individual {
         }
         this.generation = generation;
         this.length = length;
-        this.mutationRate = mutationRate;
+        this.fitness = this.calculateFitness(target);
     }
 
     mutate(mutationRate: number) {
         let newDna = "";
 
-        this.dna.split("").map((char: string) => {
+        this.dna.split("").forEach((char: string) => {
             if (Math.random() < mutationRate) {
                 char = randomChar();
             }
@@ -49,7 +52,7 @@ export default class Individual {
     calculateFitness(target: string) {
         let fitnessTotal = 0;
         this.dna.split("").map((char, i) => {
-            const deltaChar = Math.abs(charactersList.indexOf(target[i]) - charactersList.indexOf(char))
+            const deltaChar = Math.abs(charMap[target[i]] - charMap[char])
             fitnessTotal += Math.min(deltaChar, charactersList.length - deltaChar);
         })
         return fitnessTotal;

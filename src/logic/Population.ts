@@ -20,19 +20,19 @@ export default class Population {
         this._onUpdate = () => {};
 
         for (let i = 0; i < this.size; i++) {
-            this.population.push(new Individual("", this.generationCount, target.length, this.mutationRate));
+            this.population.push(new Individual("", this.generationCount, target.length, this.mutationRate,target));
         };
         this.bestFitness();
     };
 
     bestFitness() {
-        this.population = this.population.sort((a, b) => a.calculateFitness(this.target) - b.calculateFitness(this.target));
+        this.population = this.population.sort((a, b) => a.fitness - b.fitness);
     };
 
     calculateAverageFitness() {
         let averageFitness = 0;
         for (let i = 0; i < this.size; i++) {
-            averageFitness += this.population[i].calculateFitness(this.target);
+            averageFitness += this.population[i].fitness;
         };
         averageFitness /= this.size;
         return averageFitness;
@@ -41,15 +41,13 @@ export default class Population {
     nextGen() {
         const nextPopulation: Individual[] = [];
         this.generationCount++;
-        this.bestFitness();
         nextPopulation[0] = this.population[0];
         for (let i = 1; i < this.size; i++) {
-            nextPopulation[i] = new Individual(this.crossover(), this.generationCount, this.target.length, this.mutationRate)
+            nextPopulation[i] = new Individual(this.crossover(), this.generationCount, this.target.length, this.mutationRate,this.target)
         }
         this.population = nextPopulation;
+        this.bestFitness();
         this._onUpdate?.();
-
-        console.log(this.population[0].calculateFitness(this.target));
     };
 
     onUpdate(callback:CallableFunction) {
@@ -60,7 +58,6 @@ export default class Population {
         const remainingChoices: number[] = [];
         remainingChoices[0] = Math.ceil(this.target.length / 2);
         remainingChoices[1] = Math.floor(this.target.length / 2);
-        this.bestFitness();
         let child: string = "";
         for (let i = 0; i < this.target.length; i++) {
             if (remainingChoices[0] <= 0) {
@@ -86,8 +83,7 @@ export default class Population {
     };
 
     finished() {
-        this.bestFitness();
-        if (this.population[0].calculateFitness(this.target) === 0) {
+        if (this.population[0].fitness === 0) {
             console.log("Finished !")
             return true;
         }
@@ -96,7 +92,7 @@ export default class Population {
 
     printList() {
         for (let i = 0; i < this.size; i++) {
-            console.log(i + 1 + " : " + this.population[i].calculateFitness(this.target));
+            console.log(i + 1 + " : " + this.population[i].fitness);
         }
     };
 };
