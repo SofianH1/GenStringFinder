@@ -40,7 +40,6 @@ export default class Population {
 
     updateTarget(target:string) {
         this.target = target;
-        
     };
 
     nextGen() {
@@ -52,6 +51,7 @@ export default class Population {
         }
         this.population = nextPopulation;
         this.bestFitness();
+        this.averageFitness = this.calculateAverageFitness();
         this._onUpdate?.();
     };
 

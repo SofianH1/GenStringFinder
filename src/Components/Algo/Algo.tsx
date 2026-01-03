@@ -4,39 +4,45 @@ import Population from "../../logic/Population.ts";
 export default function Main() {
 	const [target, setTarget] = useState<string>("Hello World!");
 	const [isRunning, setIsRunning] = useState<boolean>(false);
+	const populationRef = useRef<Population | null>(null);
 	const [, setTick] = useState(0);
 
-	const forceUpdate = () => setTick((t) => t + 1);
-
-	const population = useRef(new Population(10000, target, 0.1));
+	useEffect(() => {
+		populationRef.current = new Population(1000, target, 0.1);
+		setIsRunning(false);
+		setTick(t => t + 1);
+	}, [target]);
 
 	useEffect(() => {
-		population.current.onUpdate(forceUpdate);
-	}, []);
+		if (!isRunning) return;
+		let frameId: number;
 
-
-	useEffect(() => {
-		population.current.updateTarget(target);
-	},[target]);
-
-	const isRunningRef = useRef(isRunning);
-
-	isRunningRef.current = isRunning;
-
-	function startLoop() {
-		function step() {
-			if (isRunningRef.current && !population.current.finished()) {
-				population.current.nextGen();
-				setTimeout(step, 1);
+		const loop = () => {
+			const pop = populationRef.current;
+			if (!pop) return;
+			if (pop.finished()) {
+				setTick(t => t + 1);
+				setIsRunning(false);
+				return;
 			}
-		}
-		step();
-	}
+			pop.nextGen();
+			if (pop.generationCount % 5 == 0)
+				setTick(t => t + 1);
+			frameId = requestAnimationFrame(loop);
+		};
+
+		frameId = requestAnimationFrame(loop);
+		return () => cancelAnimationFrame(frameId);
+	}, [isRunning]);
+
+	const population = populationRef.current;
+
+	if (!population) return <div>Loading...</div>;
 
 	return (
 		<main>
 			<div className="settings">
-				<h3>Number of generations : {population.current.generationCount}</h3>
+				<h3>Number of generations : {population.generationCount}</h3>
 				<input
 					type="text"
 					name="target"
@@ -45,36 +51,34 @@ export default function Main() {
 					onChange={(e) => setTarget(e.target.value)}
 				/>
 				<button
-					onClick={() => {
-						population.current.printList();
-						setIsRunning(true);
-						setTimeout(() => startLoop(), 0);
-					}}
-					disabled={isRunning}
+					className="runButton"
+					onClick={() => setIsRunning(true)}
+					disabled={isRunning || target.length < 1}
 				>
 					Run
 				</button>
 				<button
+					className="stopButton"
 					onClick={() => setIsRunning(false)}
 					disabled={!isRunning}
 				>
 					Stop
 				</button>
-				<h2>cible :</h2>
+				<h2>Target :</h2>
 				<h2>
 					{target}
 				</h2>
 				<br />
 				<h2>fitness (the lower, the better)</h2>
 				<h3>
-					average fitness : <br />{population.current.calculateAverageFitness()}
+					average fitness : {population.averageFitness}
 				</h3>
 				<h3>
-					fittest : {population.current.population[0].calculateFitness(target)}
+					fittest : {population.population[0].calculateFitness(target)}
 				</h3>
 			</div>
 			<div className="population">
-				{population.current.population.slice(0, 10).map((individual, key,) => {
+				{population.population.slice(0, 10).map((individual, key,) => {
 					return (
 						<h3 key={key}>
 							{target && "-"}{" "}

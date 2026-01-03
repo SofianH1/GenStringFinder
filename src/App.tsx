@@ -1,11 +1,12 @@
 import "./App.css";
-import Header from "./Components/Header/Header";
 import Main from "./Components/Algo/Algo";
 
 function App() {
 	return (
 		<>
-			<Header />
+			<header className="header">
+				<h1 id="header-title">Genetic Algorithm</h1>
+			</header>
 			<Main />
 		</>
 	);
