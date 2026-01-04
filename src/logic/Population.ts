@@ -8,6 +8,7 @@ export default class Population {
     population: Individual[] = [];
     averageFitness: number;
     generationCount: number;
+    graphData: { averageFitness: number[], fittest: number[] };
     _onUpdate: CallableFunction;
 
     constructor(size: number, target: string, mutationRate: number) {
@@ -17,6 +18,7 @@ export default class Population {
         this.population = [];
         this.averageFitness = 0;
         this.generationCount = 1;
+        this.graphData = { averageFitness: [], fittest: [] };
         this._onUpdate = () => { };
 
         for (let i = 0; i < this.size; i++) {
@@ -38,7 +40,7 @@ export default class Population {
         return averageFitness;
     };
 
-    updateTarget(target:string) {
+    updateTarget(target: string) {
         this.target = target;
     };
 
@@ -52,6 +54,8 @@ export default class Population {
         this.population = nextPopulation;
         this.bestFitness();
         this.averageFitness = this.calculateAverageFitness();
+        this.graphData.averageFitness.push(this.averageFitness);
+        this.graphData.fittest.push(this.population[0].calculateFitness(this.target))
         this._onUpdate?.();
     };
 
